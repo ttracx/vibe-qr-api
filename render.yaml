@@ -1,9 +1,17 @@
+# Render Blueprint specification
+# https://render.com/docs/blueprint-spec
+
 services:
   - type: web
     name: vibe-qr-api
     runtime: docker
+    repo: https://github.com/ttracx/vibe-qr-api
     plan: free
-    healthCheckPath: /health
+    dockerfilePath: ./Dockerfile
     envVars:
-      - key: PORT
-        value: 8000
+      - key: FREE_TIER_LIMIT
+        value: "20"
+      - key: PRO_API_KEY
+        generateValue: true
+    healthCheckPath: /health
+    autoDeploy: true

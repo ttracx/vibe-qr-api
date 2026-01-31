@@ -1,160 +1,145 @@
-# 🎨 Vibe QR API
+# 🔲 Vibe QR API
 
-Fast, beautiful QR code generation API. Built with FastAPI.
+Fast, simple QR code generation API built with FastAPI. Generate QR codes as PNG or SVG with customizable options.
 
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://dashboard.render.com/select-repo?type=web&search=vibe-qr-api)
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/ttracx/vibe-qr-api)
 
-**Live API:** https://vibe-qr-api.onrender.com
+## Features
 
-## ✨ Features
+- 🖼️ **PNG & SVG Output** - Choose your format
+- ⚡ **Fast** - Built on FastAPI with async support
+- 🎛️ **Customizable** - Size, border, error correction
+- 🚦 **Rate Limited** - Fair use with Pro tier upgrade
+- 🐳 **Docker Ready** - Easy deployment anywhere
+- 📚 **Auto-documented** - OpenAPI/Swagger docs included
 
-- **Custom Colors** - Set foreground/background colors
-- **Logo Embedding** - Add your brand logo to QR codes
-- **Multiple Styles** - Square, rounded, or circle modules
-- **SVG Support** - Vector output for print quality
-- **Bulk Generation** - Up to 50 QR codes per request
-- **Error Correction** - L/M/Q/H levels
+## Endpoints
 
-## 🚀 Quick Start
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/` | API information |
+| `GET` | `/health` | Health check |
+| `POST` | `/generate` | Generate QR code as PNG |
+| `POST` | `/generate-svg` | Generate QR code as SVG |
 
-### Generate a QR Code
+## Quick Start
+
+### Generate a QR Code (PNG)
 
 ```bash
-curl -X POST https://vibe-qr-api.onrender.com/generate \
+curl -X POST https://your-api.onrender.com/generate \
   -H "Content-Type: application/json" \
-  -d '{"data": "https://example.com"}' | jq -r .image_base64 | base64 -d > qr.png
+  -d '{"data": "https://example.com"}' \
+  --output qr.png
 ```
 
-### With Custom Colors
+### Generate a QR Code (SVG)
 
 ```bash
-curl -X POST https://vibe-qr-api.onrender.com/generate \
+curl -X POST https://your-api.onrender.com/generate-svg \
+  -H "Content-Type: application/json" \
+  -d '{"data": "Hello World"}' \
+  --output qr.svg
+```
+
+### With Options
+
+```bash
+curl -X POST https://your-api.onrender.com/generate \
   -H "Content-Type: application/json" \
   -d '{
     "data": "https://example.com",
-    "foreground": "#6366F1",
-    "background": "#F0F9FF",
-    "size": 400
-  }'
-```
-
-### With Logo
-
-```bash
-curl -X POST https://vibe-qr-api.onrender.com/generate \
-  -H "Content-Type: application/json" \
-  -d '{
-    "data": "https://example.com",
-    "logo_url": "https://example.com/logo.png",
+    "size": 10,
+    "border": 2,
     "error_correction": "H"
-  }'
+  }' \
+  --output qr.png
 ```
 
-### Generate SVG
-
-```bash
-curl -X POST https://vibe-qr-api.onrender.com/generate-svg \
-  -H "Content-Type: application/json" \
-  -d '{"data": "https://example.com"}'
-```
-
-### Bulk Generation
-
-```bash
-curl -X POST https://vibe-qr-api.onrender.com/bulk \
-  -H "Content-Type: application/json" \
-  -d '{
-    "items": [
-      {"data": "https://example1.com"},
-      {"data": "https://example2.com"},
-      {"data": "https://example3.com"}
-    ]
-  }'
-```
-
-## 📖 API Reference
-
-### `POST /generate`
-
-Generate a PNG QR code.
+## Request Parameters
 
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
-| `data` | string | required | Data to encode (max 4296 chars) |
-| `size` | integer | 300 | Image size in pixels (50-2000) |
-| `foreground` | string | #000000 | Foreground color (hex) |
-| `background` | string | #FFFFFF | Background color (hex) |
-| `error_correction` | string | M | L/M/Q/H |
-| `logo_url` | string | null | URL of logo to embed |
-| `logo_size_ratio` | float | 0.25 | Logo size ratio (0.1-0.4) |
-| `module_style` | string | square | square/rounded/circle |
+| `data` | string | required | Text or URL to encode (max 4296 chars) |
+| `size` | int | 10 | QR code version/size (1-40) |
+| `border` | int | 4 | Border size (0-10) |
+| `error_correction` | string | "M" | Error correction: L (7%), M (15%), Q (25%), H (30%) |
 
-**Response:**
-```json
-{
-  "success": true,
-  "image_base64": "iVBORw0KGgo...",
-  "format": "png",
-  "size": 300
-}
-```
+## Rate Limits
 
-### `POST /generate-svg`
+| Tier | Limit | How to Access |
+|------|-------|---------------|
+| **Free** | 20 requests/day | Default |
+| **Pro** | Unlimited | Include `X-API-Key` header |
 
-Generate an SVG QR code.
-
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `data` | string | required | Data to encode |
-| `size` | integer | 300 | Image size |
-| `foreground` | string | #000000 | Foreground color |
-| `background` | string | #FFFFFF | Background color |
-| `error_correction` | string | M | Error correction level |
-
-### `POST /bulk`
-
-Generate multiple QR codes (max 50).
-
-```json
-{
-  "items": [
-    {"data": "https://example1.com", "size": 200},
-    {"data": "https://example2.com", "foreground": "#FF0000"}
-  ]
-}
-```
-
-### `GET /health`
-
-Health check endpoint.
-
-## 💰 Pricing
-
-| Plan | Price | Requests |
-|------|-------|----------|
-| **Free** | $0/mo | 50/day |
-| **Pro** | $9/mo | Unlimited |
-
-## 🛠️ Self-Host
+### Pro Tier Usage
 
 ```bash
-# Clone
-git clone https://github.com/ttracx/vibe-qr-api.git
-cd vibe-qr-api
+curl -X POST https://your-api.onrender.com/generate \
+  -H "Content-Type: application/json" \
+  -H "X-API-Key: your-pro-api-key" \
+  -d '{"data": "https://example.com"}' \
+  --output qr.png
+```
 
-# Run with Docker
+Rate limit headers are included in responses:
+- `X-RateLimit-Remaining`: Requests remaining
+- `X-RateLimit-Limit`: Total limit (or "unlimited" for Pro)
+
+## Local Development
+
+### With Docker
+
+```bash
 docker build -t vibe-qr-api .
 docker run -p 8000:8000 vibe-qr-api
-
-# Or run directly
-pip install -r requirements.txt
-uvicorn main:app --reload
 ```
 
-## 📝 License
+### Without Docker
+
+```bash
+pip install -r requirements.txt
+uvicorn app.main:app --reload
+```
+
+Then visit: http://localhost:8000/docs
+
+## Environment Variables
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `FREE_TIER_LIMIT` | 20 | Requests per day for free tier |
+| `PRO_API_KEY` | "" | API key for Pro tier access |
+
+## Deployment
+
+### Render (Recommended)
+
+1. Click "Deploy to Render" button above, or
+2. Create new Web Service → Connect this repo → Deploy
+
+The `render.yaml` blueprint handles configuration automatically.
+
+### Docker (Anywhere)
+
+```bash
+docker pull ghcr.io/ttracx/vibe-qr-api:latest
+docker run -p 8000:8000 \
+  -e PRO_API_KEY=your-secret-key \
+  ghcr.io/ttracx/vibe-qr-api:latest
+```
+
+## API Documentation
+
+Once deployed, visit:
+- **Swagger UI**: `/docs`
+- **ReDoc**: `/redoc`
+- **OpenAPI JSON**: `/openapi.json`
+
+## License
 
 MIT
 
 ---
 
-Built with ❤️ by [ttracx](https://github.com/ttracx)
+Built with ⚡ by [ttracx](https://github.com/ttracx)
