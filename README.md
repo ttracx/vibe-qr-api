@@ -2,7 +2,9 @@
 
 Fast, beautiful QR code generation API. Built with FastAPI.
 
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/ttracx/vibe-qr-api)
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://dashboard.render.com/select-repo?type=web&search=vibe-qr-api)
+
+**Live API:** https://vibe-qr-api.onrender.com
 
 ## ✨ Features
 
